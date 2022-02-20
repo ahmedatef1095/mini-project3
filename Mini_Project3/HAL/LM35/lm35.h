@@ -1,9 +1,9 @@
 
 #ifndef LM35_H_
 #define LM35_H_
-#include "../../LIB/stdtypes.h"
+#include "../../LIB/std_types.h"
 
-#define SENSOR_CHANNEL_ID         1
+#define SENSOR_CHANNEL_ID         2
 #define SENSOR_MAX_VOLT_VALUE     1.5
 #define SENSOR_MAX_TEMPERATURE    150
 

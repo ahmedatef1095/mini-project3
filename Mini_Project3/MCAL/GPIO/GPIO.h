@@ -1,35 +1,102 @@
+ /******************************************************************************
+ *
+ * Module: GPIO
+ *
+ * File Name: gpio.h
+ *
+ * Description: Header file for the AVR GPIO driver
+ *
+ * Author: Mohamed Tarek
+ *
+ *******************************************************************************/
 
 #ifndef GPIO_H_
 #define GPIO_H_
 
-#include "../../LIB/stdtypes.h"
+#include "../../LIB/std_types.h"
 
-//Configuration Ports =================================================================================
+/*******************************************************************************
+ *                                Definitions                                  *
+ *******************************************************************************/
+#define NUM_OF_PORTS           4
+#define NUM_OF_PINS_PER_PORT   8
 
-typedef enum {INPUT=0,OUTPUT}DIRECTION;
+#define PORTA_ID               0
+#define PORTB_ID               1
+#define PORTC_ID               2
+#define PORTD_ID               3
 
-typedef enum {LOW=0,HIGH}STATE;
+#define PIN0_ID                0
+#define PIN1_ID                1
+#define PIN2_ID                2
+#define PIN3_ID                3
+#define PIN4_ID                4
+#define PIN5_ID                5
+#define PIN6_ID                6
+#define PIN7_ID                7
 
-typedef enum {PA=0,PB,PC,PD}PORT_ID;
+/*******************************************************************************
+ *                               Types Declaration                             *
+ *******************************************************************************/
+typedef enum
+{
+	PIN_INPUT,PIN_OUTPUT
+}GPIO_PinDirectionType;
 
-typedef enum {  A0=0,A1,A2,A3,A4,A5,A6,A7,
-				B0=8,B1,B2,B3,B4,B5,B6,B7,
-				C0=16,C1,C2,C3,C4,C5,C6,C7,
-				D0=24,D1,D2,D3,D4,D5,D6,D7,
-				TOTAL_PINS
-				}PIN_ID;
+typedef enum
+{
+	PORT_INPUT,PORT_OUTPUT=0xFF
+}GPIO_PortDirectionType;
 
+/*******************************************************************************
+ *                              Functions Prototypes                           *
+ *******************************************************************************/
 
-void GPIO_setupPinDirection(PIN_ID Pin , DIRECTION dir);
-void GPIO_writePin(PIN_ID Pin , STATE state);
-STATE GPIO_readPin(PIN_ID Pin);
+/*
+ * Description :
+ * Setup the direction of the required pin input/output.
+ * If the input port number or pin number are not correct, The function will not handle the request.
+ */
+void GPIO_setupPinDirection(uint8 port_num, uint8 pin_num, GPIO_PinDirectionType direction);
 
-void GPIO_setupPortDirection(PORT_ID port , uint8 dir);
-void GPIO_writePort (PORT_ID port , uint8 value);
-uint8 GPIO_readPort (PORT_ID port);
+/*
+ * Description :
+ * Write the value Logic High or Logic Low on the required pin.
+ * If the input port number or pin number are not correct, The function will not handle the request.
+ * If the pin is input, this function will enable/disable the internal pull-up resistor.
+ */
+void GPIO_writePin(uint8 port_num, uint8 pin_num, uint8 value);
 
-void GPIO_enablePullup(PIN_ID Pin);
-void GPIO_disablePullup();
+/*
+ * Description :
+ * Read and return the value for the required pin, it should be Logic High or Logic Low.
+ * If the input port number or pin number are not correct, The function will return Logic Low.
+ */
+uint8 GPIO_readPin(uint8 port_num, uint8 pin_num);
 
+/*
+ * Description :
+ * Setup the direction of the required port all pins input/output.
+ * If the direction value is PORT_INPUT all pins in this port should be input pins.
+ * If the direction value is PORT_OUTPUT all pins in this port should be output pins.
+ * If the input port number is not correct, The function will not handle the request.
+ */
+void GPIO_setupPortDirection(uint8 port_num, uint8 direction);
 
-#endif
+/*
+ * Description :
+ * Write the value on the required port.
+ * If any pin in the port is output pin the value will be written.
+ * If any pin in the port is input pin this will activate/deactivate the internal pull-up resistor.
+ * If the input port number is not correct, The function will not handle the request.
+ */
+void GPIO_writePort(uint8 port_num, uint8 value);
+
+/*
+ * Description :
+ * Read and return the value of the required port.
+ * If the input port number is not correct, The function will return ZERO value.
+ */
+uint8 GPIO_readPort(uint8 port_num);
+
+#endif /* GPIO_H_ */

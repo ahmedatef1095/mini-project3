@@ -1,9 +1,9 @@
-MCAL/GPIO/GPIO.o MCAL/GPIO/GPIO.o: ../MCAL/GPIO/GPIO.c \
-  ../MCAL/GPIO/GPIO.h ../MCAL/GPIO/../../LIB/stdtypes.h \
-  ../MCAL/GPIO/../../LIB/macros.h
+MCAL/GPIO/gpio.o MCAL/GPIO/gpio.o: ../MCAL/GPIO/gpio.c \
+  ../MCAL/GPIO/gpio.h ../MCAL/GPIO/../../LIB/std_types.h \
+  ../MCAL/GPIO/../../LIB/common_macros.h
 
-../MCAL/GPIO/GPIO.h:
+../MCAL/GPIO/gpio.h:
 
-../MCAL/GPIO/../../LIB/stdtypes.h:
+../MCAL/GPIO/../../LIB/std_types.h:
 
-../MCAL/GPIO/../../LIB/macros.h:
+../MCAL/GPIO/../../LIB/common_macros.h:

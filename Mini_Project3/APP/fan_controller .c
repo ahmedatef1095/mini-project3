@@ -1,7 +1,9 @@
+#include "../HAL/LCD/lcd.h"
+#include "../MCAL/GPIO/GPIO.h"
+#include "../MCAL/ADC/adc.h"
 
-#include "../MCAL/ADC/ADC.h"
 #include "../HAL/LM35/lm35.h"
-#include "../HAL/LCD/LCD.h"
+#include "../HAL/DcMotor/DcMotor.h"
 
 
 
@@ -12,14 +14,27 @@ int main()
 	ADC_channel1.ref_volt=VREF_256mV;
 
 	ADC_init(&ADC_channel1);
-	LCD_init();
-	//LCD_displayString('A');
-	LCD_WriteNumber(23);
+		DcMotor_init();
+		LCD_init();
+		/*Push Button*/
+		GPIO_setupPinDirection(PORTA_ID,PIN0_ID,PIN_INPUT);
+
+		LCD_displayString("Temp =      C");
+
+
 
 	while (1)
 	{
-		//data= USART_Receive_Block();
-		//USART_Transmit_Block(data);
+		 while(GPIO_readPin(PORTA_ID,PIN0_ID) ==1 )  //Check Push Button
+		 {
+			 LCD_moveCursor(0,7);
+			 LCD_displayString("    ");
+			 LCD_moveCursor(0,7);
+			 float32 temp = LM35_getTemperature();
+			 LCD_displayFloat(temp);
+			 DcMotor_rotate(DcMotor_CLOCKWISE,50);
+		 }
+		 DcMotor_rotate(DcMotor_ANTI_CLOCKWISE,50);
 	}
 		
 		

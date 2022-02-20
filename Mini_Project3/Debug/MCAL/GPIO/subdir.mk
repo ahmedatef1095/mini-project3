@@ -4,13 +4,13 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../MCAL/GPIO/GPIO.c 
+../MCAL/GPIO/gpio.c 
 
 OBJS += \
-./MCAL/GPIO/GPIO.o 
+./MCAL/GPIO/gpio.o 
 
 C_DEPS += \
-./MCAL/GPIO/GPIO.d 
+./MCAL/GPIO/gpio.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

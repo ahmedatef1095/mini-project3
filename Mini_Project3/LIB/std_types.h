@@ -1,6 +1,17 @@
+ /******************************************************************************
+ *
+ * Module: Common - Platform Types Abstraction
+ *
+ * File Name: std_types.h
+ *
+ * Description: types for AVR
+ *
+ * Author: Mohamed Tarek
+ *
+ *******************************************************************************/
 
-#ifndef STDTYPES_H_
-#define STDTYPES_H_
+#ifndef STD_TYPES_H_
+#define STD_TYPES_H_
 
 /* Boolean Data Type */
 typedef unsigned char boolean;
@@ -13,11 +24,10 @@ typedef unsigned char boolean;
 #define TRUE        (1u)
 #endif
 
-/*NULL Pointer */
-#ifndef NULL
-#define NULL     ((void*)0)
-#endif
+#define LOGIC_HIGH        (1u)
+#define LOGIC_LOW         (0u)
 
+#define NULL_PTR    ((void*)0)
 
 typedef unsigned char         uint8;          /*           0 .. 255              */
 typedef signed char           sint8;          /*        -128 .. +127             */

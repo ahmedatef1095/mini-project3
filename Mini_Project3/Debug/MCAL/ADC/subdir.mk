@@ -4,13 +4,13 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../MCAL/ADC/ADC.c 
+../MCAL/ADC/adc.c 
 
 OBJS += \
-./MCAL/ADC/ADC.o 
+./MCAL/ADC/adc.o 
 
 C_DEPS += \
-./MCAL/ADC/ADC.d 
+./MCAL/ADC/adc.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

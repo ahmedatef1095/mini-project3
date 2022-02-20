@@ -2,7 +2,7 @@
 #include <util/delay.h> /* For the delay functions */
 #include "lm35.h"
 
-#include "../../MCAL/ADC/ADC.h"
+#include "../../MCAL/ADC/adc.h"
 
 
 uint8 LM35_getTemperature(void)

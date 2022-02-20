@@ -1,6 +1,6 @@
 
-#ifndef STD_TYPES_H_
-#define STD_TYPES_H_
+#ifndef STDTYPES_H_
+#define STDTYPES_H_
 
 /* Boolean Data Type */
 typedef unsigned char boolean;

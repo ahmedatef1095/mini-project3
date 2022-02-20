@@ -3,7 +3,7 @@
 #include <avr\io.h>
 #include "../../LIB/macros.h"
 
-void GPIO_InitPin (PIN_ID pin , DIRECTION dir)
+void GPIO_setupPinDirection (PIN_ID pin , DIRECTION dir)
 {
 	PORT_ID port=pin/8;
 	pin%=8;
@@ -33,7 +33,7 @@ void GPIO_InitPin (PIN_ID pin , DIRECTION dir)
 }
 
 
-void GPIO_WritePin(PIN_ID pin , STATE state)
+void GPIO_writePin(PIN_ID pin , STATE state)
 {
 	PORT_ID port=pin/8;
 	pin%=8;
@@ -64,7 +64,7 @@ void GPIO_WritePin(PIN_ID pin , STATE state)
 }
 
 
-STATE GPIO_ReadPin(PIN_ID pin)
+STATE GPIO_readPin(PIN_ID pin)
 {		STATE state;
 		PORT_ID port=pin/8;
 		pin%=8;
@@ -79,7 +79,7 @@ STATE GPIO_ReadPin(PIN_ID pin)
 		return state;
 }
 
-void GPIO_InitPort  (PORT_ID port , uint8 dir)
+void GPIO_setupPortDirection(PORT_ID port , uint8 dir)
 {
 	switch(dir)
 	{
@@ -113,7 +113,7 @@ void GPIO_InitPort  (PORT_ID port , uint8 dir)
 
 	}
 }
-void GPIO_WritePort (PORT_ID port , uint8 value)
+void GPIO_writePort (PORT_ID port , uint8 value)
 {
 switch(port)
 	{
@@ -123,7 +123,7 @@ switch(port)
 		case PD:PORTD=value; break;
 	}
 }
-uint8 GPIO_ReadPort(PORT_ID port )
+uint8 GPIO_readPort(PORT_ID port )
 {	uint8 value;
 	switch(port)
 		{
@@ -136,13 +136,13 @@ uint8 GPIO_ReadPort(PORT_ID port )
 
 }
 
-void GPIO_Pullup_Enable(PIN_ID Pin)
+void GPIO_enablePullup(PIN_ID Pin)
 {
 	CLR_BIT(SFIOR,PUD);
-	GPIO_WritePin(Pin,HIGH);
+	GPIO_writePin(Pin,HIGH);
 
 }
-void GPIO_Pullup_Disable()
+void GPIO_disablePullup()
 {
 	SET_BIT(SFIOR,PUD);
 }

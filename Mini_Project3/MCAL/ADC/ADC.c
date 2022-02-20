@@ -1,24 +1,33 @@
 
 #include "ADC.h"
 #include <avr\io.h>
+#include "../../LIB/macros.h"
 /*******************************************************************************
  *                          Global Variables                                   *
  *******************************************************************************/
 volatile uint16 g_adcResult = 0;
 
-void ADC_init()
+void ADC_init(const ADC_ConfigType * Config_Ptr)
 {
 	/*ADC Vref Source*/
-#if(ADC_VREF == VREF_AREF )
-		CLR_BIT(ADMUX,REFS1);
-		CLR_BIT(ADMUX,REFS0);
-#elif(ADC_VREF == VREF_AVCC )
-		CLR_BIT(ADMUX,REFS1);
-		SET_BIT(ADMUX,REFS0);
-#elif(ADC_VREF == VREF_2.56V )
-		SET_BIT(ADMUX,REFS1);
-		SET_BIT(ADMUX,REFS0);
-#endif
+	switch(Config_Ptr->ref_volt)
+	{
+		case(VREF_AREF):
+			CLR_BIT(ADMUX,REFS1);
+			CLR_BIT(ADMUX,REFS0);
+			break;
+		case(VREF_AVCC):
+			CLR_BIT(ADMUX,REFS1);
+			SET_BIT(ADMUX,REFS0);
+			break;
+		case(VREF_256mV):
+			SET_BIT(ADMUX,REFS1);
+			SET_BIT(ADMUX,REFS0);
+			break;
+		default:
+			break;
+	}
+
 
 /*ADC Adjusted*/
 #if(ADC_Adjusted ==ADC_Right_Adjusted )
@@ -32,9 +41,9 @@ void ADC_init()
 
 	/*select PreScaler*/
 
-	ADCSRA |=ADC_PRESCALLER;
+	ADCSRA |=Config_Ptr->prescaler;
 	/*ADC AUTO TRIGGER SOURCE*/
-	SFIOR |= (ADC_AUTO_TRIGGER_SOURCE);
+	SFIOR |= ADC_AUTO_TRIGGER_SOURCE;
 	//ADC_Enable
 	SET_BIT(ADCSRA,ADEN);
 }

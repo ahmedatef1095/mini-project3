@@ -1,6 +1,6 @@
 
-#ifndef LIB_MACROS_H_
-#define LIB_MACROS_H_
+#ifndef MACROS_H_
+#define MACROS_H_
 
 /******Bit Operation****/
 #define SET_BIT(REG,Bit)        ((REG) |= (1<<Bit))

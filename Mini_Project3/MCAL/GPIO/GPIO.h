@@ -1,7 +1,6 @@
 
-#ifndef MCAL_GPIO_GPIO_H_
-#define MCAL_GPIO_GPIO_H_
-
+#ifndef GPIO_H_
+#define GPIO_H_
 
 #include "../../LIB/stdtypes.h"
 
@@ -21,16 +20,16 @@ typedef enum {  A0=0,A1,A2,A3,A4,A5,A6,A7,
 				}PIN_ID;
 
 
-void GPIO_InitPin(PIN_ID Pin , DIRECTION dir);
-void GPIO_WritePin(PIN_ID Pin , STATE state);
-STATE GPIO_ReadPin(PIN_ID Pin);
+void GPIO_setupPinDirection(PIN_ID Pin , DIRECTION dir);
+void GPIO_writePin(PIN_ID Pin , STATE state);
+STATE GPIO_readPin(PIN_ID Pin);
 
-void GPIO_InitPort  (PORT_ID port , uint8 dir);
-void GPIO_WritePort (PORT_ID port , uint8 value);
-uint8 GPIO_ReadPort (PORT_ID port);
+void GPIO_setupPortDirection(PORT_ID port , uint8 dir);
+void GPIO_writePort (PORT_ID port , uint8 value);
+uint8 GPIO_readPort (PORT_ID port);
 
-void GPIO_Pullup_Enable(PIN_ID Pin);
-void GPIO_Pullup_Disable();
+void GPIO_enablePullup(PIN_ID Pin);
+void GPIO_disablePullup();
 
 
 #endif

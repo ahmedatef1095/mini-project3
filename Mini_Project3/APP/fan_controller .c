@@ -32,9 +32,9 @@ int main()
 			 LCD_moveCursor(0,7);
 			 float32 temp = LM35_getTemperature();
 			 LCD_displayFloat(temp);
-			 DcMotor_rotate(DcMotor_CLOCKWISE,50);
+			 DcMotor_rotate(DcMotor_ANTI_CLOCKWISE,50);
 		 }
-		 DcMotor_rotate(DcMotor_ANTI_CLOCKWISE,50);
+		 DcMotor_rotate(DcMotor_CLOCKWISE,50);
 	}
 		
 		

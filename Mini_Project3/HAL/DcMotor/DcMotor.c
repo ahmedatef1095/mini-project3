@@ -20,8 +20,8 @@ void DcMotor_rotate(DcMotor_State state,uint8 speed)
 		 GPIO_writePin(DcMotor_IN2_PORT_ID,DcMotor_IN2_PIN_ID,LOGIC_LOW);
 	break;
 	case(DcMotor_CLOCKWISE):
-		 GPIO_writePin(DcMotor_IN1_PORT_ID,DcMotor_IN1_PIN_ID,LOGIC_HIGH);
-		 GPIO_writePin(DcMotor_IN2_PORT_ID,DcMotor_IN2_PIN_ID,LOGIC_LOW);
+		GPIO_writePin(DcMotor_IN1_PORT_ID,DcMotor_IN1_PIN_ID,LOGIC_LOW);
+		GPIO_writePin(DcMotor_IN2_PORT_ID,DcMotor_IN2_PIN_ID,LOGIC_HIGH);
 		switch(speed)
 		{
 		default:
@@ -30,8 +30,9 @@ void DcMotor_rotate(DcMotor_State state,uint8 speed)
 		}
 	break;
 	case(DcMotor_ANTI_CLOCKWISE):
-		GPIO_writePin(DcMotor_IN1_PORT_ID,DcMotor_IN1_PIN_ID,LOGIC_LOW);
-		GPIO_writePin(DcMotor_IN2_PORT_ID,DcMotor_IN2_PIN_ID,LOGIC_HIGH);
+
+		GPIO_writePin(DcMotor_IN1_PORT_ID,DcMotor_IN1_PIN_ID,LOGIC_HIGH);
+		GPIO_writePin(DcMotor_IN2_PORT_ID,DcMotor_IN2_PIN_ID,LOGIC_LOW);
 		switch(speed)
 		{
 		default:

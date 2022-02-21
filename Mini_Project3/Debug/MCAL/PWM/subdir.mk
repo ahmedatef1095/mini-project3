@@ -4,13 +4,13 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../MCAL/PWM/Timer1.c 
+../MCAL/PWM/PWM.c 
 
 OBJS += \
-./MCAL/PWM/Timer1.o 
+./MCAL/PWM/PWM.o 
 
 C_DEPS += \
-./MCAL/PWM/Timer1.d 
+./MCAL/PWM/PWM.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

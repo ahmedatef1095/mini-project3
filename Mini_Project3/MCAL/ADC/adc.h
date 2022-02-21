@@ -4,8 +4,8 @@
 
 #include "../../LIB/std_types.h"
 
-#define ADC_MAXIMUM_VALUE    1023
-#define ADC_VREF_VALUE       5
+#define ADC_MAXIMUM_VALUE    (1023)
+#define ADC_VREF_VALUE       (2.56)
 
 /* Extern Public global variables to be used by other modules */
 extern volatile uint16 g_adcResult;

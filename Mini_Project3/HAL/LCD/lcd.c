@@ -120,7 +120,7 @@ void LCD_displayChar(uint8 data)
 	_delay_ms(2);
 #endif
 }
-void LCD_writeNumber(uint32 num)
+void LCD_displayNumber(uint32 num)
 
 {
 	uint8 str[16]; //no. of pixels on lcd
@@ -217,9 +217,9 @@ void LCD_writeNumIn2Dig(uint8 num)
 	}
 	uint8 num_cpy;
 	num_cpy=num/10;
-	LCD_writeNumber(num_cpy);
+	LCD_displayNumber(num_cpy);
 	num_cpy=num%10;
-	LCD_writeNumber(num_cpy);
+	LCD_displayNumber(num_cpy);
 }
 
 void LCD_displayFloat(float32 data)
@@ -240,13 +240,13 @@ void LCD_moveCursor(uint8 row,uint8 col)
 			LCD_sendCmd(LCD_SET_CURSOR_ROW0+col);
 				break;
 		case 1:
-			LCD_sendCmd(LCD_SET_CURSOR_ROW0+col);
+			LCD_sendCmd(LCD_SET_CURSOR_ROW1+col);
 				break;
 		case 2:
-			LCD_sendCmd(LCD_SET_CURSOR_ROW0+col);
+			LCD_sendCmd(LCD_SET_CURSOR_ROW2+col);
 				break;
 		case 3:
-			LCD_sendCmd(LCD_SET_CURSOR_ROW0+col);
+			LCD_sendCmd(LCD_SET_CURSOR_ROW3+col);
 				break;
 	}
 

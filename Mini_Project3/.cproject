@@ -53,7 +53,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="MCAL/I2C|MCAL/PWM|MCAL/SPI|MCAL/USART_ConfigStruct|APP/10 UART_Transmiter.c|HAL/DataLogger|APP/06 Timer1.c|MCAL/USART|MCAL/SPI/SPI2.c|HAL/EEPROM|APP/05 Timer0.c|APP/04 WatchDog.c|MCAL/SPI_ConfigStruct|APP/APP old|HAL/ADXL345|APP/12 EEPROM_LAB1.c|HAL/FRAM|HAL/EEPROM_old|APP/02 LCD_Keybad.c|APP/01 LEDBlinking.c|APP/07 Timer2.c|APP/03 EXTINT.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="MCAL/I2C|MCAL/SPI|MCAL/USART_ConfigStruct|APP/10 UART_Transmiter.c|HAL/DataLogger|APP/06 Timer1.c|MCAL/USART|MCAL/SPI/SPI2.c|HAL/EEPROM|APP/05 Timer0.c|APP/04 WatchDog.c|MCAL/SPI_ConfigStruct|APP/APP old|HAL/ADXL345|APP/12 EEPROM_LAB1.c|HAL/FRAM|HAL/EEPROM_old|APP/02 LCD_Keybad.c|APP/01 LEDBlinking.c|APP/07 Timer2.c|APP/03 EXTINT.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -110,7 +110,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="MCAL/I2C|MCAL/PWM|MCAL/SPI|MCAL/USART_ConfigStruct|APP/10 UART_Transmiter.c|HAL/DataLogger|APP/06 Timer1.c|MCAL/USART|MCAL/SPI/SPI2.c|HAL/EEPROM|APP/05 Timer0.c|APP/04 WatchDog.c|MCAL/SPI_ConfigStruct|APP/APP old|HAL/ADXL345|APP/12 EEPROM_LAB1.c|HAL/FRAM|HAL/EEPROM_old|APP/02 LCD_Keybad.c|APP/01 LEDBlinking.c|APP/07 Timer2.c|APP/03 EXTINT.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="MCAL/I2C|MCAL/SPI|MCAL/USART_ConfigStruct|APP/10 UART_Transmiter.c|HAL/DataLogger|APP/06 Timer1.c|MCAL/USART|MCAL/SPI/SPI2.c|HAL/EEPROM|APP/05 Timer0.c|APP/04 WatchDog.c|MCAL/SPI_ConfigStruct|APP/APP old|HAL/ADXL345|APP/12 EEPROM_LAB1.c|HAL/FRAM|HAL/EEPROM_old|APP/02 LCD_Keybad.c|APP/01 LEDBlinking.c|APP/07 Timer2.c|APP/03 EXTINT.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>

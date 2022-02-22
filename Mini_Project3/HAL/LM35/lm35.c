@@ -4,6 +4,13 @@
 
 #include "../../MCAL/ADC/adc.h"
 
+void LM35_init()
+{
+	ADC_ConfigType Lm35_channel={ADC_VREF_256mV,ADC_PRESCALLER_8};
+	ADC_init(&Lm35_channel);
+
+}
+
 
 uint8 LM35_getTemperature(void)
 {

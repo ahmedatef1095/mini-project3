@@ -14,9 +14,9 @@ extern volatile uint16 g_adcResult;
 /*ADC Vref Source*/
 typedef enum
 {
-	VREF_AREF=0,
-	VREF_AVCC,
-	VREF_256mV,
+	ADC_VREF_AREF=0,
+	ADC_VREF_AVCC,
+	ADC_VREF_256mV,
 }ADC_ReferenceVolatge;
 
 

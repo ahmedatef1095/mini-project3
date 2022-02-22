@@ -8,15 +8,15 @@ void ADC_init(const ADC_ConfigType * Config_Ptr)
 	/*ADC Vref Source*/
 	switch(Config_Ptr->ref_volt)
 	{
-		case(VREF_AREF):
+		case(ADC_VREF_AREF):
 			CLEAR_BIT(ADMUX,REFS1);
 			CLEAR_BIT(ADMUX,REFS0);
 			break;
-		case(VREF_AVCC):
+		case(ADC_VREF_AVCC):
 			CLEAR_BIT(ADMUX,REFS1);
 			SET_BIT(ADMUX,REFS0);
 			break;
-		case(VREF_256mV):
+		case(ADC_VREF_256mV):
 			SET_BIT(ADMUX,REFS1);
 			SET_BIT(ADMUX,REFS0);
 			break;

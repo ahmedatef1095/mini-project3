@@ -1,6 +1,6 @@
 #include "DcMotor.h"
 #include "../../MCAL/GPIO/GPIO.h"
-#include "../../MCAL/PWM/PWM.h"
+#include "../../MCAL/PWM/pwm.h"
 
 void DcMotor_init(void)
 {

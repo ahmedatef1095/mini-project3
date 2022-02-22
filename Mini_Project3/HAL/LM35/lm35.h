@@ -11,6 +11,7 @@
  *                      Functions Prototypes                                   *
  *******************************************************************************/
 
+void LM35_init();
 /*
  * Description :
  * Function responsible for calculate the temperature from the ADC digital value.

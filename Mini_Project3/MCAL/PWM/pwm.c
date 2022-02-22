@@ -1,5 +1,6 @@
 
-#include "PWM.h"
+#include "pwm.h"
+
 #include "avr/io.h" /* To use the IO Ports Registers */
 #include "../../LIB/common_macros.h" /* To use the macros like SET_BIT */
 

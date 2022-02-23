@@ -1,254 +1,223 @@
 
-#include "lcd.h"
 
-#include<util/delay.h>
-#include "../../MCAL/GPIO/GPIO.h"
+#include <util/delay.h> /* For the delay functions */
+#include "../../lib/common_macros.h" /* To use the macros like SET_BIT */
+#include "../../hal/lcd/lcd.h"
+#include "../../mcal/gpio/gpio.h"
 
+/*******************************************************************************
+ *                      Functions Definitions                                  *
+ *******************************************************************************/
 
-//**************Init LCD***************//
-void LCD_init()
+/*
+ * Description :
+ * Initialize the LCD:
+ * 1. Setup the LCD pins directions by use the GPIO driver.
+ * 2. Setup the LCD Data Mode 4-bits or 8-bits.
+ */
+void LCD_init(void)
 {
-#if (LCD_MODE == LCD_4_BIT_MODE )
+	/* Configure the direction for RS, RW and E pins as output pins */
+	GPIO_setupPinDirection(LCD_RS_PORT_ID,LCD_RS_PIN_ID,PIN_OUTPUT);
+	GPIO_setupPinDirection(LCD_RW_PORT_ID,LCD_RW_PIN_ID,PIN_OUTPUT);
+	GPIO_setupPinDirection(LCD_E_PORT_ID,LCD_E_PIN_ID,PIN_OUTPUT);
 
-	GPIO_setupPortDirection(LCD_DATA_PORT,0x0F);         // set LCD data port as OUTPUT
-	GPIO_setupPinDirection(LCD_RS,OUTPUT);              // set LCD signals (RS, RW, E) as OUTPUT
-	GPIO_setupPinDirection(LCD_RW,OUTPUT);              // set LCD signals (RS, RW, E) as OUTPUT
-	GPIO_setupPinDirection(LCD_EN,OUTPUT);	             // set LCD signals (RS, RW, E) as OUTPUT
+#if (LCD_DATA_BITS_MODE == 4)
 
-	_delay_ms(50);                //VDD rises to 4.5 v
-	LCD_sendCmd(0x02);          //row 1 shifted by 4to the right(function set 1)
-	_delay_ms(1);
-	LCD_sendCmd(0x28);         //row 2 oring with row 3 after shifted by 4 to right(function set 2)
-	_delay_ms(1);
-	LCD_sendCmd(0x0c);        //row 1 oring with row 2 after shifted by 4 to right(display on off)
-	_delay_ms(1);
-	LCD_sendCmd(0x01);          //row 1 oring with row 2 after shifted by 4 to right(clear lcd)
-	_delay_ms(2);
-	LCD_sendCmd(0x06);          //row 1 oring with row 2 after shifted by 4 to right(mode set)
-	_delay_ms(2);
+	/* Configure 4 pins in the data port as output pins */
+	GPIO_setupPinDirection(LCD_DATA_PORT_ID,LCD_FIRST_DATA_PIN_ID,PIN_OUTPUT);
+	GPIO_setupPinDirection(LCD_DATA_PORT_ID,LCD_FIRST_DATA_PIN_ID+1,PIN_OUTPUT);
+	GPIO_setupPinDirection(LCD_DATA_PORT_ID,LCD_FIRST_DATA_PIN_ID+2,PIN_OUTPUT);
+	GPIO_setupPinDirection(LCD_DATA_PORT_ID,LCD_FIRST_DATA_PIN_ID+3,PIN_OUTPUT);
 
+	LCD_sendCommand(LCD_GO_TO_HOME);
+	LCD_sendCommand(LCD_TWO_LINES_FOUR_BITS_MODE); /* use 2-line lcd + 4-bit Data Mode + 5*7 dot display Mode */
 
-#elif(LCD_MODE == LCD_8_BIT_MODE )
-
-	GPIO_setupPortDirection(LCD_DATA_PORT_ID,0xFF);        // set LCD data port as OUTPUT
-	GPIO_setupPinDirection(LCD_RS_PORT_ID,LCD_RS_PIN_ID,PIN_OUTPUT);    // set LCD signals (RS, RW, E) as OUTPUT
-	GPIO_setupPinDirection(LCD_RW_PORT_ID,LCD_RW_PIN_ID,PIN_OUTPUT);    // set LCD signals (RS, RW, E) as OUTPUT
-	GPIO_setupPinDirection(LCD_E_PORT_ID,LCD_E_PIN_ID,PIN_OUTPUT);	   // set LCD signals (RS, RW, E) as OUTPUT
-
-	_delay_ms(30);                //VDD rises to 4.5 v
-	LCD_sendCmd(LCD_TWO_LINES_EIGHT_BITS_MODE);     // initialization in 8bit mode of 16X2 LCD
-	_delay_ms(1);
-	LCD_sendCmd(LCD_CLEAR_COMMAND);          // make clear LCD
-	_delay_ms(2);
-	LCD_sendCmd(LCD_CURSOR_INCREMENT);          // make increment in cursor
-	_delay_ms(1);
-	LCD_sendCmd(LCD_CURSOR_OFF);            // display on, cursor off
-	_delay_ms(10);
-	
+#elif (LCD_DATA_BITS_MODE == 8)
+	/* Configure the data port as output port */
+	GPIO_setupPortDirection(LCD_DATA_PORT_ID,PORT_OUTPUT);
+	LCD_sendCommand(LCD_TWO_LINES_EIGHT_BITS_MODE); /* use 2-line lcd + 8-bit Data Mode + 5*7 dot display Mode */
 #endif
+
+	LCD_sendCommand(LCD_CURSOR_OFF); /* cursor off */
+	LCD_sendCommand(LCD_CLEAR_COMMAND); /* clear LCD at the beginning */
 }
 
-//**************sending command on LCD***************//
-void LCD_sendCmd(uint8 cmd)
-{   
-#if (LCD_MODE ==LCD_4_BIT_MODE )
-	/*clear RS and RW */
-	GPIO_writePin(RS,LOGIC_LOW);   // RS sets 0
-	GPIO_writePin(RW,LOGIC_LOW);   // RW sets 0
-	/*Write cmd at data port */
-	/*first Write MSB 4bits*/
-	GPIO_writePort(LCD_DATA_PORT,cmd>>4);
-	GPIO_writePin(EN,LOGIC_HIGH);              // make enable from LOGIC_HIGH to LOGIC_LOW
-	_delay_ms(1);						//delay for 50 usec
-	GPIO_writePin(EN,LOGIC_LOW);              // make enable from LOGIC_HIGH to LOGIC_LOW
-	_delay_ms(2);                     //After every instruction
-
-	/*write LSB 4bits second*/
-	GPIO_WritePort(LCD_DATA_PORT,cmd);
-	GPIO_writePin(EN,LOGIC_HIGH);              // make enable from LOGIC_HIGH to LOGIC_LOW
-	_delay_ms(1);                        //delay for 50 usec
-	GPIO_writePin(EN,LOGIC_LOW);              // make enable from LOGIC_HIGH to LOGIC_LOW
-	_delay_ms(2);                       //After every instruction
-
-
-#elif(LCD_MODE ==LCD_8_BIT_MODE )
-	GPIO_writePin(LCD_RS_PORT_ID,LCD_RS_PIN_ID,LOGIC_LOW);   // RS sets 0
-	GPIO_writePin(LCD_RW_PORT_ID,LCD_RW_PIN_ID,LOGIC_LOW);   // RW sets 0
-	
-	GPIO_writePort(LCD_DATA_PORT_ID,cmd);      // data lines are set to send command
-	
-	GPIO_writePin(LCD_E_PORT_ID,LCD_E_PIN_ID,LOGIC_HIGH);  // make enable from LOGIC_HIGH to LOGIC_LOW
-	_delay_ms(1);
-	GPIO_writePin(LCD_E_PORT_ID,LCD_E_PIN_ID,LOGIC_LOW);  // make enable from LOGIC_HIGH to LOGIC_LOW
-	_delay_ms(2);
-#endif
-}
-
-
-
-//*****************write char on LCD*****************//
-void LCD_displayChar(uint8 data)
-{   	
-#if(LCD_MODE ==LCD_4_BIT_MODE)
-
-	GPIO_writePin(RS,LOGIC_HIGH);   // RS sets 1
-	GPIO_writePin(RW,LOGIC_LOW);   // RW sets 0
-	/*first Write MSB 4bits*/
-	GPIO_WritePort(LCD_DATA_PORT,data>>4);    //data lines are set to send command
-	GPIO_writePin(EN,LOGIC_HIGH);  // make enable from LOGIC_HIGH to LOGIC_LOW
-	_delay_ms(1);
-	GPIO_writePin(EN,LOGIC_LOW);  // make enable from LOGIC_HIGH to LOGIC_LOW
-	_delay_ms(2);
-
-	/*Second Write MSB 4bits*/
-	GPIO_WritePort(LCD_DATA_PORT,data);    //data lines are set to send command
-	GPIO_writePin(EN,LOGIC_HIGH);  // make enable from LOGIC_HIGH to LOGIC_LOW
-	_delay_ms(1);
-	GPIO_writePin(EN,LOGIC_LOW);  // make enable from LOGIC_HIGH to LOGIC_LOW
-	_delay_ms(2);
-
-
-#elif(LCD_MODE ==LCD_8_BIT_MODE )
-	GPIO_writePin(LCD_RS_PORT_ID,LCD_RS_PIN_ID,LOGIC_HIGH);   // RS sets 1
-	GPIO_writePin(LCD_RW_PORT_ID,LCD_RW_PIN_ID,LOGIC_LOW);   // RW sets 0
-	
-	GPIO_writePort(LCD_DATA_PORT_ID,data);      // data lines are set to send command
-	
-	GPIO_writePin(LCD_E_PORT_ID,LCD_E_PIN_ID,LOGIC_HIGH);  // make enable from LOGIC_HIGH to LOGIC_LOW
-	_delay_ms(1);
-	GPIO_writePin(LCD_E_PORT_ID,LCD_E_PIN_ID,LOGIC_LOW);  // make enable from LOGIC_HIGH to LOGIC_LOW
-	_delay_ms(2);
-#endif
-}
-void LCD_displayNumber(uint32 num)
-
+/*
+ * Description :
+ * Send the required command to the screen
+ */
+void LCD_sendCommand(uint8 command)
 {
-	uint8 str[16]; //no. of pixels on lcd
-	uint8 i=0,j;
-	if(num==0)
+	GPIO_writePin(LCD_RS_PORT_ID,LCD_RS_PIN_ID,LOGIC_LOW); /* Instruction Mode RS=0 */
+	GPIO_writePin(LCD_RW_PORT_ID,LCD_RW_PIN_ID,LOGIC_LOW); /* write data to LCD so RW=0 */
+	_delay_ms(1); /* delay for processing Tas = 50ns */
+	GPIO_writePin(LCD_E_PORT_ID,LCD_E_PIN_ID,LOGIC_HIGH); /* Enable LCD E=1 */
+	_delay_ms(1); /* delay for processing Tpw - Tdws = 190ns */
+
+#if (LCD_DATA_BITS_MODE == 4)
+	uint8 lcd_port_value = 0;
+	/* out the last 4 bits of the required command to the data bus D4 --> D7 */
+	lcd_port_value = GPIO_readPort(LCD_DATA_PORT_ID);
+#ifdef LCD_LAST_PORT_PINS
+	lcd_port_value = (lcd_port_value & 0x0F) | (command & 0xF0);
+#else
+	lcd_port_value = (lcd_port_value & 0xF0) | ((command & 0xF0) >> 4);
+#endif
+	GPIO_writePort(LCD_DATA_PORT_ID,lcd_port_value);
+
+	_delay_ms(1); /* delay for processing Tdsw = 100ns */
+	GPIO_writePin(LCD_E_PORT_ID,LCD_E_PIN_ID,LOGIC_LOW); /* Disable LCD E=0 */
+	_delay_ms(1); /* delay for processing Th = 13ns */
+	GPIO_writePin(LCD_E_PORT_ID,LCD_E_PIN_ID,LOGIC_HIGH); /* Enable LCD E=1 */
+	_delay_ms(1); /* delay for processing Tpw - Tdws = 190ns */
+
+	/* out the first 4 bits of the required command to the data bus D4 --> D7 */
+	lcd_port_value = GPIO_readPort(LCD_DATA_PORT_ID);
+#ifdef LCD_LAST_PORT_PINS
+	lcd_port_value = (lcd_port_value & 0x0F) | ((command & 0x0F) << 4);
+#else
+	lcd_port_value = (lcd_port_value & 0xF0) | (command & 0x0F);
+#endif
+	GPIO_writePort(LCD_DATA_PORT_ID,lcd_port_value);
+
+	_delay_ms(1); /* delay for processing Tdsw = 100ns */
+	GPIO_writePin(LCD_E_PORT_ID,LCD_E_PIN_ID,LOGIC_LOW); /* Disable LCD E=0 */
+	_delay_ms(1); /* delay for processing Th = 13ns */
+
+#elif (LCD_DATA_BITS_MODE == 8)
+	GPIO_writePort(LCD_DATA_PORT_ID,command); /* out the required command to the data bus D0 --> D7 */
+	_delay_ms(1); /* delay for processing Tdsw = 100ns */
+	GPIO_writePin(LCD_E_PORT_ID,LCD_E_PIN_ID,LOGIC_LOW); /* Disable LCD E=0 */
+	_delay_ms(1); /* delay for processing Th = 13ns */
+#endif
+}
+
+/*
+ * Description :
+ * Display the required character on the screen
+ */
+void LCD_displayCharacter(uint8 data)
+{
+	GPIO_writePin(LCD_RS_PORT_ID,LCD_RS_PIN_ID,LOGIC_HIGH); /* Data Mode RS=1 */
+	GPIO_writePin(LCD_RW_PORT_ID,LCD_RW_PIN_ID,LOGIC_LOW); /* write data to LCD so RW=0 */
+	_delay_ms(1); /* delay for processing Tas = 50ns */
+	GPIO_writePin(LCD_E_PORT_ID,LCD_E_PIN_ID,LOGIC_HIGH); /* Enable LCD E=1 */
+	_delay_ms(1); /* delay for processing Tpw - Tdws = 190ns */
+
+#if (LCD_DATA_BITS_MODE == 4)
+	uint8 lcd_port_value = 0;
+	/* out the last 4 bits of the required data to the data bus D4 --> D7 */
+	lcd_port_value = GPIO_readPort(LCD_DATA_PORT_ID);
+#ifdef LCD_LAST_PORT_PINS
+	lcd_port_value = (lcd_port_value & 0x0F) | (data & 0xF0);
+#else
+	lcd_port_value = (lcd_port_value & 0xF0) | ((data & 0xF0) >> 4);
+#endif
+	GPIO_writePort(LCD_DATA_PORT_ID,lcd_port_value);
+
+	_delay_ms(1); /* delay for processing Tdsw = 100ns */
+	GPIO_writePin(LCD_E_PORT_ID,LCD_E_PIN_ID,LOGIC_LOW); /* Disable LCD E=0 */
+	_delay_ms(1); /* delay for processing Th = 13ns */
+	GPIO_writePin(LCD_E_PORT_ID,LCD_E_PIN_ID,LOGIC_HIGH); /* Enable LCD E=1 */
+	_delay_ms(1); /* delay for processing Tpw - Tdws = 190ns */
+
+	/* out the first 4 bits of the required data to the data bus D4 --> D7 */
+	lcd_port_value = GPIO_readPort(LCD_DATA_PORT_ID);
+#ifdef LCD_LAST_PORT_PINS
+	lcd_port_value = (lcd_port_value & 0x0F) | ((data & 0x0F) << 4);
+#else
+	lcd_port_value = (lcd_port_value & 0xF0) | (data & 0x0F);
+#endif
+	GPIO_writePort(LCD_DATA_PORT_ID,lcd_port_value);
+
+	_delay_ms(1); /* delay for processing Tdsw = 100ns */
+	GPIO_writePin(LCD_E_PORT_ID,LCD_E_PIN_ID,LOGIC_LOW); /* Disable LCD E=0 */
+	_delay_ms(1); /* delay for processing Th = 13ns */
+
+#elif (LCD_DATA_BITS_MODE == 8)
+	GPIO_writePort(LCD_DATA_PORT_ID,data); /* out the required data to the data bus D0 --> D7 */
+	_delay_ms(1); /* delay for processing Tdsw = 100ns */
+	GPIO_writePin(LCD_E_PORT_ID,LCD_E_PIN_ID,LOGIC_LOW); /* Disable LCD E=0 */
+	_delay_ms(1); /* delay for processing Th = 13ns */
+#endif
+}
+
+/*
+ * Description :
+ * Display the required string on the screen
+ */
+void LCD_displayString(const char *Str)
+{
+	uint8 i = 0;
+	while(Str[i] != '\0')
 	{
-		LCD_displayChar('0');
-	}
-	while(num)
-	{
-		str[i]=(num%10)+'0';
+		LCD_displayCharacter(Str[i]);
 		i++;
-		num/=10;
 	}
-	for(j=i;j>0;j--)
+	/***************** Another Method ***********************
+	while((*Str) != '\0')
 	{
-		LCD_displayChar(str[j-1]);
-	}
+		LCD_displayCharacter(*Str);
+		Str++;
+	}		
+	*********************************************************/
 }
 
-
-/*Function to write a string at LCD from address zero */
-void LCD_displayString(const uint8 *str)
-{
-	uint8 index =0,line =1;
-	while(str[index] > '\0')
-	{
-		if(index < 16 && line ==1)
-		{
-			LCD_displayChar(str[index]);
-			index++;
-		}
-		
-		else if (index== 16 && line ==1)
-		{
-			LCD_sendCmd(0xC0);          // move cursor to the start of 2nd line
-			line++;
-		}
-		else if (index < 32 && line ==2)
-		{
-			LCD_displayChar(str[index]);
-			index++;
-		}
-	
-	}
-	
-}
-/*function to write a multi pages at LCD with delay between pages*/
-void LCD_writeMultiPages(uint8 *str,uint16 delay)
-	{
-		uint8 index =0,page=0,line =1;
-		while(str[index] > '\0')
-		{
-			if(index < (16+page)&&line ==1)
-			{
-				LCD_displayChar(str[index]);
-				index++;	
-			}
-			
-			else if ((index== (16+page)) && line ==1)
-			{
-				LCD_sendCmd(0xC0);          // move cursor to the start of 2nd line
-				line++; 
-			}
-			else if ((index < (32+page)) && line ==2)
-			{
-				LCD_displayChar(str[index]);
-				index++;
-			}
-		     
-		   else if ((index == (32+page)) && line ==2)
-		   {
-			   _delay_ms(delay);
-			   LCD_sendCmd(0x01);          // make clear LCD
-			   line--;
-			   page+=32;
-		   }
-		
-		}
-	   
-}
-
-void LCD_clear(void)
-{
-
-	LCD_sendCmd(LCD_CLEAR_COMMAND);          // make clear LCD
-	
-}
-void LCD_writeNumIn2Dig(uint8 num)
-{
-	if(num>99)
-	{
-		num=num%100;
-	}
-	uint8 num_cpy;
-	num_cpy=num/10;
-	LCD_displayNumber(num_cpy);
-	num_cpy=num%10;
-	LCD_displayNumber(num_cpy);
-}
-
-void LCD_displayFloat(float32 data)
-{
-   uint8 buff[16]; /* String to hold the ascii result */
-   //4 is mininum width, 3 is precision; float value is copied onto buff
-   dtostrf(data, 4, 1, buff);
-   LCD_displayString(buff); /* Display the string */
-}
-
-
+/*
+ * Description :
+ * Move the cursor to a specified row and column index on the screen
+ */
 void LCD_moveCursor(uint8 row,uint8 col)
 {
+	uint8 lcd_memory_address;
+	
 	/* Calculate the required address in the LCD DDRAM */
 	switch(row)
 	{
 		case 0:
-			LCD_sendCmd(LCD_SET_CURSOR_ROW0+col);
+			lcd_memory_address=col;
 				break;
 		case 1:
-			LCD_sendCmd(LCD_SET_CURSOR_ROW1+col);
+			lcd_memory_address=col+0x40;
 				break;
 		case 2:
-			LCD_sendCmd(LCD_SET_CURSOR_ROW2+col);
+			lcd_memory_address=col+0x10;
 				break;
 		case 3:
-			LCD_sendCmd(LCD_SET_CURSOR_ROW3+col);
+			lcd_memory_address=col+0x50;
 				break;
-	}
-
+	}					
+	/* Move the LCD cursor to this specific address */
+	LCD_sendCommand(lcd_memory_address | LCD_SET_CURSOR_LOCATION);
 }
 
+/*
+ * Description :
+ * Display the required string in a specified row and column index on the screen
+ */
+void LCD_displayStringRowColumn(uint8 row,uint8 col,const char *Str)
+{
+	LCD_moveCursor(row,col); /* go to to the required LCD position */
+	LCD_displayString(Str); /* display the string */
+}
+
+/*
+ * Description :
+ * Display the required decimal value on the screen
+ */
+void LCD_displayNumber(int data)
+{
+   char buff[16]; /* String to hold the ascii result */
+   itoa(data,buff,10); /* Use itoa C function to convert the data to its corresponding ASCII value, 10 for decimal */
+   LCD_displayString(buff); /* Display the string */
+}
+
+/*
+ * Description :
+ * Send the clear screen command
+ */
+void LCD_clearScreen(void)
+{
+	LCD_sendCommand(LCD_CLEAR_COMMAND); /* Send clear display command */
+}

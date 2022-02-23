@@ -1,39 +1,44 @@
-#include "DcMotor.h"
-#include "../../MCAL/GPIO/GPIO.h"
-#include "../../MCAL/PWM/pwm.h"
+
+#include "dcmotor.h"
+#include "../../mcal/gpio/gpio.h"
+#include "../../mcal/pwm/pwm.h"
+
 
 void DcMotor_init(void)
 {
- GPIO_setupPinDirection(DcMotor_IN1_PORT_ID,DcMotor_IN1_PIN_ID,PIN_OUTPUT);
- GPIO_setupPinDirection(DcMotor_IN2_PORT_ID,DcMotor_IN2_PIN_ID,PIN_OUTPUT);
+	/*set PIN_IN1 and PIN_IN2 as OUTPUT pins*/
+	GPIO_setupPinDirection(DcMotor_IN1_PORT_ID,DcMotor_IN1_PIN_ID,PIN_OUTPUT);
+	GPIO_setupPinDirection(DcMotor_IN2_PORT_ID,DcMotor_IN2_PIN_ID,PIN_OUTPUT);
 
- GPIO_writePin(DcMotor_IN1_PORT_ID,DcMotor_IN1_PIN_ID,LOGIC_LOW);
- GPIO_writePin(DcMotor_IN2_PORT_ID,DcMotor_IN2_PIN_ID,LOGIC_LOW);
- /* Motor is stop at the beginning */
+	/*set PIN_IN1 and PIN_IN2 Low so Motor is stop at the beginning */
+	GPIO_writePin(DcMotor_IN1_PORT_ID,DcMotor_IN1_PIN_ID,LOGIC_LOW);
+	GPIO_writePin(DcMotor_IN2_PORT_ID,DcMotor_IN2_PIN_ID,LOGIC_LOW);
+
 }
 void DcMotor_rotate(DcMotor_State state,uint8 speed)
 {
-
 	switch(state)
 	{
-		/*DcMotor stop*/
-		case(DcMotor_STOP):
-			 GPIO_writePin(DcMotor_IN1_PORT_ID,DcMotor_IN1_PIN_ID,LOGIC_LOW);
-			 GPIO_writePin(DcMotor_IN2_PORT_ID,DcMotor_IN2_PIN_ID,LOGIC_LOW);
+		case(DcMotor_STOP):  /*DC Motor Stop*/
+					GPIO_writePin(DcMotor_IN1_PORT_ID,DcMotor_IN1_PIN_ID,LOGIC_LOW);
+					GPIO_writePin(DcMotor_IN2_PORT_ID,DcMotor_IN2_PIN_ID,LOGIC_LOW);
 		break;
-		/*DcMotor rotate CLOCKWISE*/
-		case(DcMotor_CLOCKWISE):
-			GPIO_writePin(DcMotor_IN1_PORT_ID,DcMotor_IN1_PIN_ID,LOGIC_LOW);
-			GPIO_writePin(DcMotor_IN2_PORT_ID,DcMotor_IN2_PIN_ID,LOGIC_HIGH);
+
+		/*DC Motor rotate*/
+		case(DcMotor_CLOCKWISE):   /*DcMotor rotate CLOCKWISE*/
+					GPIO_writePin(DcMotor_IN1_PORT_ID,DcMotor_IN1_PIN_ID,LOGIC_LOW);
+					GPIO_writePin(DcMotor_IN2_PORT_ID,DcMotor_IN2_PIN_ID,LOGIC_HIGH);
 		break;
-		/*DcMotor rotate ANTI CLOCKWISE*/
-		case(DcMotor_ANTI_CLOCKWISE):
-			GPIO_writePin(DcMotor_IN1_PORT_ID,DcMotor_IN1_PIN_ID,LOGIC_HIGH);
-			GPIO_writePin(DcMotor_IN2_PORT_ID,DcMotor_IN2_PIN_ID,LOGIC_LOW);
+
+		case(DcMotor_ANTI_CLOCKWISE):	/*DcMotor rotate ANTI CLOCKWISE*/
+					GPIO_writePin(DcMotor_IN1_PORT_ID,DcMotor_IN1_PIN_ID,LOGIC_HIGH);
+					GPIO_writePin(DcMotor_IN2_PORT_ID,DcMotor_IN2_PIN_ID,LOGIC_LOW);
 		break;
 	}
+
 	/*covert speed to duty cycle*/
-	uint8 dutyCycle =((speed*256)/100)-1;
+	uint8 dutyCycle =((speed*255)/100);
 	/*call PWM function to determine the speed */
-	Timer0_PWM_Init(dutyCycle);
+	Timer0_PWM_init(dutyCycle);
+
 }

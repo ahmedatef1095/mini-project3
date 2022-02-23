@@ -1,35 +1,24 @@
 
 #include "adc.h"
 #include <avr\io.h>
-#include "../../LIB/common_macros.h"
+
+#include "../../lib/common_macros.h" /* To use the macros like SET_BIT */
+
 
 void ADC_init(const ADC_ConfigType * Config_Ptr)
 {
 	/*ADC Vref Source*/
-	switch(Config_Ptr->ref_volt)
-	{
-		case(ADC_VREF_AREF):
-			CLEAR_BIT(ADMUX,REFS1);
-			CLEAR_BIT(ADMUX,REFS0);
-			break;
-		case(ADC_VREF_AVCC):
-			CLEAR_BIT(ADMUX,REFS1);
-			SET_BIT(ADMUX,REFS0);
-			break;
-		case(ADC_VREF_256mV):
-			SET_BIT(ADMUX,REFS1);
-			SET_BIT(ADMUX,REFS0);
-			break;
-		default:
-			break;
-	}
+	ADMUX = (ADMUX & 0x3F) | ( (Config_Ptr->ref_volt<<6) & 0xC0);
 
 	/*select PreScaler*/
 	ADCSRA |=Config_Ptr->prescaler;
+
 	/*ADC AUTO TRIGGER SOURCE*/
-	//ADC_Enable
-	SET_BIT(ADCSRA,ADEN);
+	/*ADC_Enable*/
+	ADCSRA |=(1<<ADEN);
+
 }
+
 
 uint16 ADC_readChannel(uint8 channel)
 {
@@ -39,4 +28,5 @@ uint16 ADC_readChannel(uint8 channel)
 	while(GET_BIT(ADCSRA,ADIF) == 0); /* Wait for conversion to complete, ADIF becomes '1' */
 	SET_BIT(ADCSRA,ADIF); /* Clear ADIF by write '1' to it :) */
 	return ADC; /* Read the digital value from the data register */
+
 }

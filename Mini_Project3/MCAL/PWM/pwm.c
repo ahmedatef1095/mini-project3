@@ -1,10 +1,9 @@
 
 #include "pwm.h"
-
 #include "avr/io.h" /* To use the IO Ports Registers */
-#include "../../LIB/common_macros.h" /* To use the macros like SET_BIT */
 
-void Timer0_PWM_Init(uint8  duty_cycle)
+
+void Timer0_PWM_init(uint8  duty_cycle)
 {
 	TCNT0 = 0; // Set Timer Initial Value to 0
 	

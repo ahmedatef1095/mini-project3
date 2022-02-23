@@ -1,30 +1,40 @@
 
-#include <util/delay.h> /* For the delay functions */
 #include "lm35.h"
+#include <util/delay.h>
+#include "../../mcal/adc/adc.h"
+#include "../../mcal/gpio/gpio.h"
+/*******************************************************************************
+ *                      Functions Prototypes                                   *
+ *******************************************************************************/
 
-#include "../../MCAL/ADC/adc.h"
-
+/*
+ * Description :
+ * Setup LM35 Sensor and ADC configuration.
+ */
 void LM35_init()
 {
 	ADC_ConfigType Lm35_channel={ADC_VREF_256mV,ADC_PRESCALLER_8};
 	ADC_init(&Lm35_channel);
-
+	GPIO_setupPinDirection(PORTA_ID,PIN2_ID,PIN_INPUT);
+	_delay_ms(300);
 }
 
-
+/*
+ * Description :
+ * Function responsible for calculate the temperature from the ADC digital value.
+ */
 uint8 LM35_getTemperature(void)
 {
-	uint8 temp_value = 0;
+	uint16 adc_value = 0;
 
 	/* Read ADC channel where the temperature sensor is connected */
-	uint16 readChannel=ADC_readChannel(SENSOR_CHANNEL_ID);
-
-	/* Make delay for some time until g_adcResult value is updated with the ADC interrupt */
-	_delay_ms(5);
+	adc_value = ADC_readChannel(SENSOR_CHANNEL_ID);
 
 	/* Calculate the temperature from the ADC value*/
-	temp_value = (uint8)(((uint32)readChannel*SENSOR_MAX_TEMPERATURE*ADC_VREF_VALUE)/(ADC_MAXIMUM_VALUE*SENSOR_MAX_VOLT_VALUE));
+	adc_value = (uint8)(((uint32)adc_value*SENSOR_MAX_TEMPERATURE*ADC_REF_VOLT_VALUE)/(ADC_MAXIMUM_VALUE*SENSOR_MAX_VOLT_VALUE));
 
-	return temp_value;
+	return adc_value;
 }
+
+
 

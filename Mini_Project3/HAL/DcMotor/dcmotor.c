@@ -1,5 +1,6 @@
 
 #include "dcmotor.h"
+
 #include "../../mcal/gpio/gpio.h"
 #include "../../mcal/pwm/pwm.h"
 
@@ -37,7 +38,7 @@ void DcMotor_rotate(DcMotor_State state,uint8 speed)
 	}
 
 	/*covert speed to duty cycle*/
-	uint8 dutyCycle =((speed*255)/100);
+	uint8 dutyCycle =((speed/100)*255);   //to Avoid overflow
 	/*call PWM function to determine the speed */
 	Timer0_PWM_init(dutyCycle);
 

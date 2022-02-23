@@ -11,7 +11,7 @@
 #include <util/delay.h>
 #include "../hal/lcd/lcd.h"
 #include "../hal/lm35/lm35.h"
-#include "../hal/DcMotor/DcMotor.h"
+#include "../HAL/DcMotor/dcmotor.h"
 
 #define OUT_OF_RANGE_TEMOERATURE        200
 
@@ -21,7 +21,6 @@ int main()
 	LCD_init();
 	/*setup the LM35 Sensor*/
 	LM35_init();
-
 	/*setup DcMotror*/
 	DcMotor_init();
 	/**/

@@ -1,7 +1,6 @@
 
 #include "adc.h"
 #include <avr\io.h>
-
 #include "../../lib/common_macros.h" /* To use the macros like SET_BIT */
 
 
